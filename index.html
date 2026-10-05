@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wahda Web Chat · 交互原型</title>
+<title>Wahda Web Chat · Interactive Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
 <style>
-/* ═══ Wahda Web Chat Prototype · 基于	Figma Make 源码 1:1 复刻 + 双语 ═══ */
+/* ═══ Wahda Web Chat Prototype · EN only · 1:1 port of the Figma Make source ═══ */
 :root{
   --bg:#0E1A27; --nav:#080f1a; --msg:#0a1520; --card:#1a2535; --card-hi:#1e2d3d;
   --accent:#C2F74F; --accent-dim:rgba(194,247,79,.12); --blue:#007AFF;
@@ -39,12 +39,6 @@ input::placeholder,textarea::placeholder{color:var(--txt3)}
 .av-md{width:40px;height:40px;font-size:14px}.av-lg{width:48px;height:48px;font-size:16px}
 .av-xl{width:64px;height:64px;font-size:20px}.av-2xl{width:80px;height:80px;font-size:24px}
 
-/* ─── 语言切换 ─── */
-#langPill{position:fixed;top:12px;right:14px;z-index:10001;display:flex;gap:2px;background:rgba(14,26,39,.85);border:1px solid var(--line);border-radius:999px;padding:3px;backdrop-filter:blur(6px);opacity:.25;transition:opacity .15s}
-#langPill:hover,#langPill:focus-within{opacity:1}
-#langPill.light{background:rgba(255,255,255,.9);border-color:#e5e7eb}
-#langPill button{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;color:var(--txt2)}
-#langPill button.on{background:var(--accent);color:#0E1A27}
 .scr-light{position:fixed;inset:0;background:#f9fafb;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;z-index:5}
 .auth-card{width:100%;max-width:384px;background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid #f3f4f6;padding:32px;color:#111}
 .auth-card.center{text-align:center}
@@ -480,7 +474,7 @@ textarea.din{resize:none}
 .gcard .act .gray{background:rgba(255,255,255,.1);color:#d1d5db;font-weight:500}
 .gcard .act .blue{background:rgba(0,122,255,.2);color:#93c5fd;font-weight:500}
 .gcard .act .yellow{background:rgba(250,204,21,.1);color:var(--yellow);font-weight:400}
-.invwrap{display:flex;flex-direction:column;gap:16px;max-width:512px;padding:24px}
+.invwrap{display:flex;flex-direction:column;gap:16px;max-width:512px;margin:0 auto;padding:24px}
 .invcard{background:var(--card);border-radius:16px;padding:16px;border:1px solid rgba(255,255,255,.05)}
 .invcard .r1{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
 .invcard h4{font-size:13px;font-weight:600;color:#fff}
@@ -494,6 +488,12 @@ textarea.din{resize:none}
 .invcard .btns .dec{background:rgba(255,255,255,.1);color:#d1d5db}
 .invcard .btns .acc{background:var(--accent);color:#0E1A27;font-weight:600}
 .invcard .btns .req{background:var(--blue);color:#fff;font-weight:600}
+/* 宽屏适配：Square 面板铺满 nav 右侧全部宽度；超过 1600px 时内容居中，不再无限拉伸 */
+#square > .sq-head,#square > .sq-tabs{width:100%}
+#square .sq-search,#square .sq-cats,#square .sq-subs,#square .ggrid{width:100%;max-width:1600px;margin-left:auto;margin-right:auto}
+@media (min-width:2000px){
+  .sq-head,.sq-tabs{padding-left:max(24px,calc((100% - 1600px)/2));padding-right:max(24px,calc((100% - 1600px)/2))}
+}
 .invcard .pending{width:100%;padding:10px 0;border-radius:12px;background:rgba(250,204,21,.1);color:var(--yellow);font-size:13px;font-weight:500;text-align:center}
 
 /* Settings */
@@ -533,13 +533,11 @@ textarea.din{resize:none}
 .addlink:hover{opacity:.8}
 
 /* 响应式：手机端 handoff */
-@media (max-width:599px){#app{display:none}#langPill{display:none}}
+@media (max-width:599px){#app{display:none}}
 </style>
 </head>
 <body>
 
-<!-- 语言切换 -->
-<div id="langPill"><button id="lgEn" class="on" onclick="setLang('en')">EN</button><button id="lgZh" onclick="setLang('zh')">中文</button></div>
 
 <!-- ═══ 屏1 · QR 扫码登录 ═══ -->
 <div id="scr-qr" class="scr-light">
@@ -674,7 +672,7 @@ textarea.din{resize:none}
 
 <script>
 'use strict';
-/* ════════════════ i18n 双语字典 ════════════════ */
+/* ════════════════ i18n strings (English only) ════════════════ */
 const I18N = {
 en: {
   qr_title:'Connect Wahda Web', qr_sub:'Scan this code with Wahda on your phone.',
@@ -792,131 +790,12 @@ en: {
   inv_accept:'Accept', inv_request:'Request to join', inv_decline:'Decline', inv_members:'👥 {0} members',
   rj_t:'Request to join', rj_ph:'Introduce yourself…', rj_send:'Send', t_req_sent3:'Request sent!',
   undo:'Undo', copy_fail:'Copy not available in this context',
-  lang_row:'🌐 Language / 语言',
+  lang_row:'🌐 Language',
   time_yesterday:'Yesterday', months:'Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec',
-},
-zh: {
-  qr_title:'连接 Wahda 网页版', qr_sub:'用手机上的 Wahda 扫描此二维码。',
-  qr_connected:'账号已连接。', qr_expired:'二维码已过期', qr_refresh:'刷新二维码',
-  qr_failed:'连接失败', qr_tryagain:'重试',
-  qr_hint:'点击二维码模拟扫码',
-  qr_step1:'在手机上打开 Wahda。', qr_step2:'进入聊天。', qr_step3:'点击 + 图标。',
-  qr_step4:'选择「扫一扫」并扫描此二维码。',
-  qr_test_expired:'演示：过期', qr_test_failed:'演示：失败',
-  qr_alt:'使用用户名、手机号或邮箱登录',
-  login_title:'登录 Wahda', login_id_label:'用户名、手机号或邮箱', login_pw_label:'密码',
-  login_required:'此项为必填。', login_general:'用户名或密码错误。请尝试下方示例凭证。',
-  login_btn:'登录', login_loading:'登录中…', login_back:'← 返回扫码登录',
-  login_demo_label:'演示凭证：', login_demo_user:'用户名', login_demo_pw:'密码',
-  sync_l0:'正在连接你的账号…', sync_l1:'正在同步聊天…', sync_l2:'正在加载消息…', sync_l3:'即将完成…',
-  sync_failed:'同步失败', sync_retry:'重试', sync_test_fail:'演示失败状态',
-  ho_title:'请在 Wahda App 中继续', ho_sub:'打开 Wahda，与好友和群组畅聊。',
-  ho_open:'打开 Wahda', ho_noapp:'还没有安装 App？', ho_note:'原型——应用链接为模拟',
-  nav_chats:'聊天', nav_friends:'好友', nav_square:'广场',
-  cl_search:'搜索…', f_all:'全部', f_unread:'未读', f_groups:'群聊',
-  cl_locked:'锁定的聊天', cl_archived:'已归档', cl_requests:'消息请求', pindiv:'聊天',
-  no_chats_t:'暂无聊天', no_chats_s:'发起新聊天或加入群组',
-  m_newchat:'💬 新聊天', m_creategrp:'👥 创建群组',
-  sv_locked:'锁定的聊天', sv_archived:'已归档', sv_requests:'消息请求',
-  lock_btn:'上锁', pc_locked_t:'私密聊天已锁定', pc_unlock:'解锁',
-  pd_title:'解锁私密聊天', pd_hint:'演示密码：{0}', pd_ph:'输入密码', pd_unlock:'解锁', pd_cancel:'取消',
-  pd_wrong_n:'密码错误，还剩 {0} 次机会。', pd_wrong_1:'密码错误，还剩 1 次机会。', pd_locked_out:'尝试次数过多，请稍后再试。',
-  no_archived:'暂无归档聊天', no_locked:'暂无锁定聊天', no_requests:'暂无消息请求',
-  sel_n:'已选 {0} 项', bulk_read:'标为已读', bulk_archive:'归档', bulk_delete:'删除', bulk_cancel:'取消',
-  del_chat_t:'删除聊天？', del_chat_b:'此操作无法撤销。', del:'删除',
-  rm_pin:'置顶', rm_unpin:'取消置顶', rm_archive:'归档', rm_unarchive:'取消归档', rm_lock:'锁定', rm_unlock:'解锁',
-  t_pinned:'已置顶', t_unpinned:'已取消置顶', t_archived:'已归档', t_unarchived:'已取消归档',
-  t_locked:'聊天已锁定', t_unlocked:'聊天已解锁', t_deleted:'聊天已删除', t_marked_read:'已标为已读',
-  t_forwarded:'已转发', t_msg_deleted:'消息已删除', t_deleted_one:'已删除',
-  pv_photo:'📷 图片', pv_file:'📎 {0}', pv_voice:'🎙️ 语音 ({0})', pv_loc:'📍 {0}', pv_sticker:'🎭 贴纸', pv_del:'🚫 该消息已删除',
-  members_n:'{0} 位成员', tap_info:'点击查看联系人资料', welcome_t:'Wahda Web', welcome_s:'选择一个会话，或点击 + 按钮发起新聊天',
-  ac_voice:'语音通话', ac_video:'视频通话',
-  b_reply:'回复', b_copy:'复制', b_forward:'转发', b_translate:'翻译', b_hide_tr:'收起翻译', b_delete:'删除', b_select:'多选',
-  translating:'翻译中…', you:'你', them:'对方', fwd:'↪ 已转发', msg_ph:'输入消息…',
-  del_msg_t:'删除消息？', del_me:'仅自己删除', del_everyone:'所有人可见删除', cancel:'取消',
-  fwd_t:'转发消息', fwd_search:'搜索聊天…', fwd_n:'转发给 {0} 人', fwd_etc:'转发…',
-  selbar_n:'已选 {0} 条',
-  ci_group:'群组信息', ci_contact:'联系人信息', ci_info:'资料', ci_requests:'申请', ci_requests_n:'申请 ({0})', ci_settings:'设置',
-  ci_mute:'🔇 静音', ci_unmute:'🔔 取消静音', ci_share:'↗ 分享', ci_arch:'📁 归档聊天', ci_unarch:'📂 取消归档', ci_delchat:'🗑 删除聊天',
-  ci_no_reqs:'暂无待处理的申请', ci_approve:'通过', ci_decline:'拒绝',
-  ci_gname:'群名称', ci_gdesc:'描述', ci_save:'保存更改', t_group_updated:'群组已更新',
-  t_approved:'已通过 {0} 的申请', t_declined_one:'已拒绝 {0} 的申请',
-  sh_t:'分享群组', sh_wahda:'在 Wahda 内分享', sh_link:'复制链接', sh_qr:'二维码',
-  sh_send_n:'向 {0} 个聊天发送邀请', sh_send_etc:'发送邀请…', sh_copied:'✓ 已复制！', sh_copy_link:'复制链接', sh_save_qr:'保存二维码',
-  nc_t:'新聊天', nc_search:'搜索好友…',
-  cg_s1:'群组信息', cg_s2:'添加成员', cg_s3:'确认并创建', cg_back:'← 返回',
-  cg_next1:'下一步：添加成员', cg_next2:'下一步：确认',
-  cg_name:'群名称 *', cg_name_ph:'输入群名称', cg_name_req:'群名称为必填',
-  cg_desc:'描述', cg_desc_ph:'这个群是关于什么的？', cg_cat:'类别', cg_cat_ph:'选择类别…', cg_sub:'子类别', cg_sub_ph:'选择…',
-  cg_vis:'可见性', cg_pub:'🌐 公开', cg_pri:'🔒 私密',
-  cg_sel_n:'已选 {0} 人', cg_m_search:'搜索好友…',
-  cg_members_n:'{0} 位成员', cg_create:'创建群组', cg_creating:'⏳ 创建中…',
-  cg_discard_t:'放弃创建群组？', cg_discard_b:'未保存的更改将丢失。', cg_discard:'放弃',
-  t_group_created:'群组「{0}」已创建！',
-  am_accounts:'账号', am_personal:'个人', am_settings:'账号设置', am_support:'联系客服',
-  am_guidelines:'社区准则', am_reset:'重置演示', am_logout:'退出登录',
-  am_logout_t:'确定退出登录？', am_logout_b:'确定要退出吗？',
-  t_switch_personal:'已切换到个人账号', t_switch_acc:'已切换到 {0}',
-  set_t_acc:'账号设置', set_t_named:'{0} 设置',
-  set_profile:'个人资料', set_privacy:'隐私', set_devices:'设备', set_security:'安全', set_admins:'管理员',
-  set_name:'姓名', set_username:'用户名', set_phone:'手机号', set_bio:'简介', set_save:'保存更改', t_profile_saved:'资料已更新',
-  set_msg_perm:'消息权限', set_msg_perm_s:'谁可以给你发消息', set_everyone:'所有人', set_friends_only:'仅好友',
-  set_last_seen:'显示在线时间', set_receipts:'已读回执',
-  set_dev_active:'当前在线', set_dev_h:'{0} 小时前', set_dev_d:'{0} 天前', set_dev_logout:'退出', t_dev_logout:'{0} 已退出登录',
-  set_code_t:'修改私密聊天密码', set_code_s:'此密码用于保护你锁定的聊天。',
-  set_code_cur:'当前密码', set_code_new:'新密码', set_code_conf:'确认新密码',
-  set_code_fill:'请填写所有字段', set_code_mismatch:'两次输入的新密码不一致', set_code_len:'密码至少 6 位',
-  set_code_update:'更新密码', t_code_updated:'私密聊天密码已更新',
-  adm_desc:'管理员可以代表此账号访问并管理消息。最多可设 {0} 名管理员（所有者除外）。',
-  adm_list:'管理员（{0}/{1}）', adm_add:'+ 添加', adm_limit:'⚠ 已达管理员上限（{0}）。请先移除一名管理员再添加。',
-  adm_owner:'所有者', adm_admin:'管理员', adm_remove:'移除', adm_you:'你',
-  adm_nonowner:'⚠ 作为管理员，你可以管理消息，但不能添加或移除其他管理员，也无法查看此账号的设备会话。',
-  adm_pick_t:'添加管理员', adm_pick_s:'选择一位好友设为管理员。对方将能够代表 {0} 访问并管理消息。',
-  adm_pick_ph:'搜索好友…', adm_none:'没有可添加的好友',
-  adm_add_t:'将 {0} 设为管理员？', adm_add_b:'{0} 将能够代表 {1} 访问并管理消息。', adm_add_ok:'设为管理员',
-  adm_rm_t:'移除 {0}？', adm_rm_b:'{0} 将失去对 {1} 的管理员权限。', adm_rm_ok:'移除',
-  t_adm_added:'已添加 {0} 为管理员', t_adm_removed:'已移除 {0} 的管理员权限',
-  acct_type_business:'商业账号', acct_type_charity:'慈善账号', acct_type_entity:'实体账号',
-  fr_t:'好友', fr_add:'+', fr_add_title:'添加好友',
-  fr_contacts:'联系人', fr_requests:'申请', fr_search:'搜索好友…', fr_all:'全部',
-  fr_none:'未找到好友', fr_pick_t:'选择好友查看详情',
-  fr_pick_s:'在左侧浏览联系人，或点击 + 按钮添加新好友',
-  fr_no_reqs:'暂无待处理申请', fr_accept:'接受', fr_decline:'拒绝',
-  t_now_friend:'{0} 已成为你的好友', t_req_accepted:'已接受 {0}',
-  fd_message:'消息', fd_voice:'语音', fd_video:'视频', fd_more:'更多',
-  fd_mute:'🔇 静音', fd_unmute:'🔔 取消静音', fd_report:'⚠️ 举报', fd_block:'🚫 拉黑', fd_unblock:'✅ 取消拉黑',
-  t_reported:'已举报 {0}', t_muted:'已静音', t_unmuted:'已取消静音', t_blocked:'已拉黑 {0}', t_unblocked:'已取消拉黑',
-  fd_block_t:'拉黑 {0}？', fd_block_b:'对方将无法给你发送消息。', fd_unblock_t:'取消拉黑 {0}？', fd_unblock_b:'对方将可以重新给你发送消息。',
-  fd_block_ok:'拉黑', fd_unblock_ok:'取消拉黑',
-  fd_bio:'简介', fd_mobile:'手机', fd_notshared:'未共享', fd_nickname:'备注名', fd_nick_ph:'添加备注…', fd_save:'保存', t_nick_saved:'备注已保存',
-  fd_tags:'标签', fd_media:'媒体（{0}）', fd_files:'文件（{0}）',
-  fd_no_media:'暂无共享媒体', fd_no_files:'暂无共享文件', fd_no_calls:'暂无通话记录',
-  dir_out:'拨出', dir_in:'来电', dir_missed:'未接', ct_voice:'语音', ct_video:'视频', fd_callback:'↩ 回拨',
-  t_wid_copied:'Wahda ID 已复制', t_opening:'正在打开 {0}',
-  af_t:'添加好友', af_back:'← 返回', af_find:'找人', af_ph:'通过 Wahda ID 或手机号搜索',
-  af_go:'搜索', af_searching:'搜索中…', af_none:'未找到「{0}」', af_none_s:'试试其它 Wahda ID 或手机号',
-  af_view:'查看', af_add:'添加', af_sent:'已发送', t_req_sent_to:'已向 {0} 发送好友申请',
-  af_demo_t:'演示：模拟对方通过', af_demo_s:'真实产品中，对方会收到你的申请并选择接受或拒绝。',
-  af_demo_go:'模拟通过 →', t_demo_accepted:'{0} 通过了你的好友申请！',
-  af_my:'我的资料', af_copyid:'复制 ID', af_copied:'✓ 已复制', af_copylink:'复制链接', af_dlqr:'下载二维码', t_qr_dl:'二维码已下载',
-  af_qr_note:'别人扫描此码即可在 Wahda 找到你', af_req_sent:'请求已发送',
-  af_private:'🔒 私密账号——发消息需对方同意', af_close:'关闭',
-  t_id_copied:'Wahda ID 已复制', t_link_copied:'资料链接已复制', t_req_sent2:'已向 {0} 发送申请',
-  sq_t:'群广场', sq_create:'+ 创建群组', sq_discover:'发现', sq_invitations:'邀请',
-  sq_search:'搜索群组…', sq_join:'加入', sq_request:'申请加入', sq_open:'打开聊天', sq_reqsent:'已发送申请',
-  t_joined:'已加入 {0}', sq_members:'👥 {0}', sq_detail_join:'加入群组',
-  inv_by:'邀请人', inv_approval:'✋ 需管理员审核', inv_pending:'✋ 等待管理员审核',
-  t_inv_declined:'已拒绝邀请', t_inv_sent:'申请已发送——等待管理员审核',
-  inv_no_t:'暂无待处理的邀请', inv_no_s:'群组邀请会显示在这里。私密群组仅可通过邀请加入。',
-  inv_accept:'接受', inv_request:'申请加入', inv_decline:'拒绝', inv_members:'👥 {0} 位成员',
-  rj_t:'申请加入', rj_ph:'自我介绍一下…', rj_send:'发送', t_req_sent3:'申请已发送！',
-  undo:'撤销', copy_fail:'当前环境不支持复制',
-  lang_row:'🌐 Language / 语言',
-  time_yesterday:'昨天', months:'1月|2月|3月|4月|5月|6月|7月|8月|9月|10月|11月|12月',
-}};
-let LANG = 'en';
-const t = (k, ...args) => { let s = (I18N[LANG] && I18N[LANG][k]) || I18N.en[k] || k; args.forEach((a, i) => { s = s.split('{' + i + '}').join(a); }); return s; };
-function setLang(l){ LANG = l; document.getElementById('lgEn').classList.toggle('on', l === 'en'); document.getElementById('lgZh').classList.toggle('on', l === 'zh'); applyStaticI18n(); rerenderAll(); }
+}
+};
+
+const t = (k, ...args) => { let s = I18N.en[k] || k; args.forEach((a, i) => { s = s.split('{' + i + '}').join(a); }); return s; };
 function applyStaticI18n(){ document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); }); renderPwEye(); }
 function fmtN(n){ return n.toLocaleString('en-US'); }
 
@@ -950,9 +829,9 @@ function fmtTime(d){
   const hh = String(d.getHours()).padStart(2,'0'), mm = String(d.getMinutes()).padStart(2,'0');
   if (days <= 0 && now.getDate() === d.getDate()) return hh + ':' + mm;
   if (days === 1 || (days <= 0 && now.getDate() !== d.getDate())) return t('time_yesterday');
-  if (days < 7) { const wd = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]; return LANG === 'zh' ? '周' + '日一二三四五六'[d.getDay()] : wd; }
+  if (days < 7) { return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]; }
   const mons = t('months').split('|');
-  return (d.getDate() < 10 ? '0' : '') + d.getDate() + ' ' + (LANG === 'zh' ? mons[d.getMonth()] : mons[d.getMonth()]);
+  return (d.getDate() < 10 ? '0' : '') + d.getDate() + ' ' + mons[d.getMonth()];
 }
 function avHtml(name, color, size, extra){
   return '<div class="av av-' + (size || 'md') + '" style="background:' + color + '"' + (extra || '') + '>' + esc(initials(name)) + '</div>';
@@ -1381,7 +1260,6 @@ function showScreen(s){
   document.getElementById('scr-sync').classList.toggle('hide', s !== 'sync');
   document.getElementById('scr-handoff').classList.toggle('hide', s !== 'handoff');
   document.getElementById('app').classList.toggle('hide', s !== 'app');
-  document.getElementById('langPill').classList.toggle('light', s !== 'app');
   applyStaticI18n();
 }
 /* ── QR 登录 ── */
@@ -1628,10 +1506,10 @@ function acceptMsgReq(id){
   S.conversations = [newConv].concat(S.conversations);
   S.messages[convId] = rq.messages;
   reqSelected = null; activeConvId = convId; chatSubView = 'main'; resetCvLocal();
-  addToast((LANG === 'zh' ? '已接受来自 ' : 'Accepted message from ') + rq.name);
+  addToast('Accepted message from ' + rq.name);
   renderChatList(); renderMainArea(); renderNav(); renderOverlays();
 }
-function declineMsgReq(id){ S.messageRequests = S.messageRequests.filter(r => r.id !== id); reqSelected = null; addToast(LANG === 'zh' ? '已拒绝请求' : 'Request declined'); renderChatList(); renderNav(); }
+function declineMsgReq(id){ S.messageRequests = S.messageRequests.filter(r => r.id !== id); reqSelected = null; addToast('Request declined'); renderChatList(); renderNav(); }
 function archiveMsgReq(id){ S.messageRequests = S.messageRequests.map(r => r.id === id ? Object.assign(r, { isArchived: true }) : r); reqSelected = null; renderChatList(); renderNav(); }
 
 /* 会话操作 */
@@ -1667,7 +1545,7 @@ function deleteConv(id){
   addToast(t('t_deleted')); renderChatList(); renderNav(); renderOverlays();
 }
 function bulkMarkRead(){ selectedConvIds.forEach(id => updateConv(id, { unreadCount: 0 })); convSelectionMode = false; selectedConvIds = []; addToast(t('t_marked_read')); renderChatList(); renderNav(); }
-function bulkArchive(){ const n = selectedConvIds.length; selectedConvIds.forEach(id => updateConv(id, { isArchived: true })); convSelectionMode = false; selectedConvIds = []; addToast(n + (LANG === 'zh' ? ' 项已归档' : ' archived')); renderChatList(); renderNav(); }
+function bulkArchive(){ const n = selectedConvIds.length; selectedConvIds.forEach(id => updateConv(id, { isArchived: true })); convSelectionMode = false; selectedConvIds = []; addToast(n + ' archived'); renderChatList(); renderNav(); }
 function bulkDelete(){ const ids = selectedConvIds.slice(); ids.forEach(id => deleteConv(id)); convSelectionMode = false; selectedConvIds = []; }
 /* 私密聊天解锁 */
 function openUnlock(){ unlockOpen = true; unlockErr = ''; renderOverlays(); }
@@ -1720,9 +1598,13 @@ function forwardMsg(convId, msgId, targetIds){
 /* ════════════════ 会话视图 ════════════════ */
 function renderMainArea(){
   const el = document.getElementById('mainarea');
-  document.getElementById('chatDivider').style.display = mainSection === 'chats' ? '' : 'none';
-  document.getElementById('chatlist').style.display = mainSection === 'chats' ? '' : 'none';
-  if (mainSection !== 'chats') { el.innerHTML = ''; return; }
+  const isChats = mainSection === 'chats';
+  document.getElementById('chatDivider').style.display = isChats ? '' : 'none';
+  document.getElementById('chatlist').style.display = isChats ? '' : 'none';
+  /* 非 chats 区块必须让位：只清空内容的话，空 #mainarea 仍以 flex:1 占据左半屏，
+     会把 Friends / Square 挤到右半边 */
+  el.style.display = isChats ? '' : 'none';
+  if (!isChats) { el.innerHTML = ''; return; }
   const conv = activeConv();
   if (!conv) {
     el.innerHTML = '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 32px;height:100%;width:100%">' +
@@ -1794,7 +1676,7 @@ function startCall(type){ callState = { conv: activeConv(), type: type }; render
 function bubbleHtml(m, conv, all){
   const isDeleted = m.isDeletedForEveryone || (m.isDeletedForMe && m.isOutgoing);
   const isOut = m.isOutgoing;
-  if (isDeleted) return '<div class="mrow ' + (isOut ? 'out' : 'in') + '"><div class="deleted-bub">' + esc(LANG === 'zh' ? '该消息已被删除' : 'This message was deleted') + '</div></div>';
+  if (isDeleted) return '<div class="mrow ' + (isOut ? 'out' : 'in') + '"><div class="deleted-bub">This message was deleted</div></div>';
   const replyMsg = m.replyTo ? all.find(x => x.id === m.replyTo) : null;
   const tr = cvTranslate[m.id];
   const reactions = m.reactions || {};
@@ -2193,7 +2075,7 @@ function shareToConvs(){
   const conv = activeConv();
   const linkMsg = '📢 ' + conv.name + '\n' + (conv.description || '') + '\nJoin: ' + (conv.inviteLink || ('https://wahda.app/join/' + conv.id));
   shareSel.forEach(tid => sendMessage(tid, linkMsg, 'text'));
-  addToast(LANG === 'zh' ? '邀请已发送！' : 'Invitation sent!');
+  addToast('Invitation sent!');
   shareOpen = false; shareSel = []; renderOverlays();
 }
 /* ════════════════ 账号菜单 ════════════════ */
@@ -2491,7 +2373,7 @@ function friendDetailHtml(f, tags){
       '<button class="danger" onclick="fdMore=false;confirmBox={title:(' + (f.isBlocked ? 't(\'fd_unblock_t\')' : 't(\'fd_block_t\')') + ').replace(\'{0}\',\'' + esc(f.name).replace(/'/g, "\\'") + '\'),body:(' + (f.isBlocked ? 't(\'fd_unblock_b\')' : 't(\'fd_block_b\')') + '),confirmLabel:(' + (f.isBlocked ? 't(\'fd_unblock_ok\')' : 't(\'fd_block_ok\')') + '),danger:' + (!f.isBlocked) + ',onConfirm:()=>fdToggleBlock(\'' + f.id + '\')};renderOverlays()">' + esc(f.isBlocked ? t('fd_unblock') : t('fd_block')) + '</button></div>' : '') +
     '</div></div></div>' +
     '<div class="fd-tabs">' + ['overview','media','calls'].map(tb =>
-      '<button class="tab' + (fdTab === tb ? ' on' : '') + '" onclick="fdTab=\'' + tb + '\';renderFriends()">' + esc(LANG === 'zh' ? ({overview:'概览',media:'媒体',calls:'通话'})[tb] : tb) + '</button>').join('') + '</div>' +
+      '<button class="tab' + (fdTab === tb ? ' on' : '') + '" onclick="fdTab=\'' + tb + '\';renderFriends()">' + esc(tb) + '</button>').join('') + '</div>' +
     '<div class="fd-body">' + body + '</div>' +
     '</div>';
 }
@@ -2783,7 +2665,7 @@ KEY RULES:
   · 消息状态链: sent →(1s)→ delivered →(2.5s)→ read
   · 私密聊天解锁码: PRIVATE_CHAT_DEMO_CODE, 错 1 次提示, 错 3 次锁定
   · 账号切换: personal / business / charity / entity 各自独立 conversations/friends/tags
-  · i18n: I18N{en,zh} + t(key,...args) + data-i18n 静态绑定, setLang 全量重渲染
+  · i18n: I18N.en only + t(key,...args) + data-i18n 静态绑定 (单语言，无切换器)
 ══════════════════════════════════════════════════════════════ */
 </script>
 </body>
