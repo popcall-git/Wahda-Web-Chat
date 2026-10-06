@@ -89,9 +89,6 @@ input::placeholder,textarea::placeholder{color:var(--txt3)}
 .ghosttest{margin-top:24px;font-size:11px;color:#d1d5db;transition:color .15s}
 .ghosttest:hover{color:#9ca3af}
 
-/* Handoff */
-.handoff{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;z-index:50}
-
 /* ═══ 主应用（深色三栏）═══ */
 #app{display:flex;height:100vh;width:100vw;overflow:hidden;background:var(--bg)}
 #nav{width:72px;flex-shrink:0;background:var(--nav);border-right:1px solid var(--line8);display:flex;flex-direction:column;height:100%}
@@ -356,7 +353,7 @@ textarea.din{resize:none}
 .friendrow .un{font-size:11px;color:var(--txt2)}
 .ftag{font-size:9px;padding:2px 6px;border-radius:999px;display:inline-block}
 #fdetail{flex:1;min-width:0;height:100%;overflow:hidden;background:var(--msg)}
-.fd-wrap{display:flex;flex-direction:column;height:100%;background:var(--bg)}
+.fd-wrap{display:flex;flex-direction:column;height:100%;background:var(--bg);position:relative}
 .fd-head{display:flex;flex-direction:column;align-items:center;padding:24px 20px 16px;border-bottom:1px solid var(--line);flex-shrink:0;position:relative}
 .fd-head h2{font-size:20px;font-weight:700;color:#fff;margin-top:12px;display:flex;align-items:center;gap:8px}
 .fd-head .vf{color:#60a5fa;font-size:13px}
@@ -532,8 +529,23 @@ textarea.din{resize:none}
 .addlink{color:var(--accent);font-size:13px;display:flex;align-items:center;gap:4px}
 .addlink:hover{opacity:.8}
 
-/* 响应式：手机端 handoff */
-@media (max-width:599px){#app{display:none}}
+/* 响应式：窄屏（手机浏览器）应用布局适配
+   规则：≤700px 时 Chats 列表 ⇄ 会话视图二选一全屏；Friends 列表 ⇄ 详情二选一；
+   信息抽屉改为右侧浮层；导航栏收窄为纯图标 */
+.cv-back,.mback{display:none}
+@media (max-width:700px){
+  #nav{width:56px}
+  .navitem .lb,#navAcct .nm{display:none}
+  #chatlist{max-width:calc(100vw - 56px)}
+  #chatDivider{display:none !important}
+  #infodrawer{position:fixed;right:0;top:0;bottom:0;width:min(340px,92vw);z-index:60;box-shadow:-12px 0 32px rgba(0,0,0,.45)}
+  #flist{width:auto !important;flex:1;min-width:0}
+  #friendsWrap.m-detail #flist{display:none}
+  #friendsWrap:not(.m-detail) #fdetail{display:none}
+  .cv-back{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;color:var(--txt2);font-size:18px;flex-shrink:0}
+  .cv-back:hover{background:rgba(255,255,255,.06)}
+  .mback{display:flex;position:absolute;top:12px;left:12px;z-index:5;width:34px;height:34px;align-items:center;justify-content:center;border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-size:17px}
+}
 </style>
 </head>
 <body>
@@ -625,31 +637,6 @@ textarea.din{resize:none}
   </div>
 </div>
 
-<!-- ═══ 屏4 · 移动端 Handoff ═══ -->
-<div id="scr-handoff" class="handoff hide">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px">
-    <div style="width:48px;height:48px;border-radius:16px;background:#0E1A27;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px">W</div>
-    <span style="font-size:24px;font-weight:700;color:#0E1A27">Wahda</span>
-  </div>
-  <svg width="120" height="120" viewBox="0 0 120 120" fill="none" style="margin-bottom:32px">
-    <rect x="20" y="10" width="80" height="100" rx="12" fill="#f0f4f8"/><rect x="28" y="22" width="64" height="64" rx="8" fill="#E8F0FE"/>
-    <rect x="36" y="38" width="48" height="5" rx="2.5" fill="#007AFF" opacity="0.3"/><rect x="36" y="47" width="32" height="5" rx="2.5" fill="#007AFF" opacity="0.2"/>
-    <circle cx="60" cy="68" r="10" fill="#C2F74F"/><path d="M55 68l4 4 8-7" stroke="#0E1A27" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <rect x="42" y="90" width="36" height="8" rx="4" fill="#0E1A27" opacity="0.1"/>
-  </svg>
-  <h1 style="font-size:24px;font-weight:700;text-align:center;margin-bottom:12px;color:#0E1A27" data-i18n="ho_title">Continue in the Wahda app</h1>
-  <p style="text-align:center;color:#6b7280;margin-bottom:32px;max-width:320px;line-height:1.6" data-i18n="ho_sub">Open Wahda to chat with your friends and groups.</p>
-  <button class="btn-dark" style="max-width:320px;padding:12px 24px;border-radius:12px;font-size:15px" onclick="location.href='wahda://open'" data-i18n="ho_open">Open Wahda</button>
-  <div style="width:320px;text-align:center;margin-top:16px">
-    <p style="font-size:13px;color:#9ca3af;margin-bottom:16px" data-i18n="ho_noapp">Don't have the app?</p>
-    <div style="display:flex;gap:12px">
-      <a href="https://apps.apple.com" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid #e5e7eb;color:#374151;font-size:13px;font-weight:500;text-decoration:none"> App Store</a>
-      <a href="https://play.google.com" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid #e5e7eb;color:#374151;font-size:13px;font-weight:500;text-decoration:none">▶ Google Play</a>
-    </div>
-  </div>
-  <p style="margin-top:32px;font-size:11px;color:#d1d5db;text-align:center" data-i18n="ho_note">Prototype — simulated app links</p>
-</div>
-
 <!-- ═══ 主应用 ═══ -->
 <div id="app" class="hide">
   <nav id="nav">
@@ -689,8 +676,7 @@ en: {
   login_demo_label:'Demo credentials:', login_demo_user:'username', login_demo_pw:'password',
   sync_l0:'Connecting to your account…', sync_l1:'Syncing your chats…', sync_l2:'Loading messages…', sync_l3:'Almost ready…',
   sync_failed:'Synchronisation failed', sync_retry:'Retry', sync_test_fail:'Test failure state',
-  ho_title:'Continue in the Wahda app', ho_sub:'Open Wahda to chat with your friends and groups.',
-  ho_open:'Open Wahda', ho_noapp:"Don't have the app?", ho_note:'Prototype — simulated app links',
+
   nav_chats:'Chats', nav_friends:'Friends', nav_square:'Square',
   cl_search:'Search…', f_all:'all', f_unread:'unread', f_groups:'groups',
   cl_locked:'Locked chats', cl_archived:'Archived', cl_requests:'Message requests', pindiv:'Chats',
@@ -1258,7 +1244,6 @@ function showScreen(s){
   document.getElementById('scr-qr').classList.toggle('hide', s !== 'qr');
   document.getElementById('scr-login').classList.toggle('hide', s !== 'login');
   document.getElementById('scr-sync').classList.toggle('hide', s !== 'sync');
-  document.getElementById('scr-handoff').classList.toggle('hide', s !== 'handoff');
   document.getElementById('app').classList.toggle('hide', s !== 'app');
   applyStaticI18n();
 }
@@ -1596,14 +1581,17 @@ function forwardMsg(convId, msgId, targetIds){
 }
 
 /* ════════════════ 会话视图 ════════════════ */
+function isNarrow(){ return window.innerWidth <= 700; }
 function renderMainArea(){
   const el = document.getElementById('mainarea');
   const isChats = mainSection === 'chats';
-  document.getElementById('chatDivider').style.display = isChats ? '' : 'none';
-  document.getElementById('chatlist').style.display = isChats ? '' : 'none';
+  /* 窄屏（手机）：列表 ⇄ 会话 二选一全屏；桌面端：三栏并存 */
+  const narrow = isNarrow();
+  document.getElementById('chatDivider').style.display = (isChats && !narrow) ? '' : 'none';
+  document.getElementById('chatlist').style.display = (isChats && (!narrow || !activeConvId)) ? '' : 'none';
   /* 非 chats 区块必须让位：只清空内容的话，空 #mainarea 仍以 flex:1 占据左半屏，
      会把 Friends / Square 挤到右半边 */
-  el.style.display = isChats ? '' : 'none';
+  el.style.display = (isChats && (!narrow || !!activeConvId)) ? '' : 'none';
   if (!isChats) { el.innerHTML = ''; return; }
   const conv = activeConv();
   if (!conv) {
@@ -1615,7 +1603,9 @@ function renderMainArea(){
   }
   const msgs = currentMsgs()[conv.id] || [];
   const acct = activeAccount();
-  let head = '<div class="cv-head">' + avHtml(conv.name, conv.avatarColor, 'md', ' onclick="toggleInfoDrawer()"') +
+  let head = '<div class="cv-head">' +
+    '<button class="cv-back" onclick="activeConvId=null;renderMainArea()" title="Back">←</button>' +
+    avHtml(conv.name, conv.avatarColor, 'md', ' onclick="toggleInfoDrawer()"') +
     '<div class="info" onclick="toggleInfoDrawer()"><h2>' + esc(conv.name) + '</h2>' +
     '<p class="sub">' + esc(conv.type === 'group' ? t('members_n', conv.memberCount || conv.participants.length) : t('tap_info')) + '</p></div>' +
     '<div class="acts">' + (conv.type !== 'group'
@@ -2240,6 +2230,8 @@ function renderFriends(){
   const el = document.getElementById('friendsWrap');
   if (mainSection !== 'friends') { el.classList.add('hide'); return; }
   el.classList.remove('hide');
+  /* 窄屏：选中好友/请求时隐藏列表，仅显示详情（返回键切回列表） */
+  el.classList.toggle('m-detail', isNarrow() && !!(frSelectedId || frReqSelectedId));
   if (frAddMode) { el.innerHTML = addFriendHtml(); return; }
   const friends = currentFriends();
   const tags = currentTags();
@@ -2276,10 +2268,10 @@ function renderFriends(){
   }
   left += '</div>';
   /* 右侧详情 */
-  let right = '<div style="flex:1;min-width:0;height:100%;overflow:hidden;background:var(--msg)">';
+  let right = '<div id="fdetail" style="flex:1;min-width:0;height:100%;overflow:hidden;background:var(--msg)">';
   if (selFriend) right += friendDetailHtml(selFriend, tags);
   else if (selReq) {
-    right += '<div style="display:flex;flex-direction:column;height:100%;background:var(--bg)"><div style="display:flex;flex-direction:column;align-items:center;padding:40px 20px 24px;border-bottom:1px solid var(--line)">' +
+    right += '<div style="display:flex;flex-direction:column;height:100%;background:var(--bg)"><button class="mback" style="position:static;align-self:flex-start;margin:12px 0 0 12px" onclick="frReqSelectedId=null;renderFriends()">←</button><div style="display:flex;flex-direction:column;align-items:center;padding:40px 20px 24px;border-bottom:1px solid var(--line)">' +
       avHtml(selReq.name, selReq.avatarColor, '2xl') +
       '<h2 style="font-size:20px;font-weight:700;color:#fff;margin-top:12px">' + esc(selReq.name) + '</h2>' +
       '<p style="color:var(--txt2);font-size:13px;margin-top:2px">@' + esc(selReq.username) + '</p>' +
@@ -2356,7 +2348,7 @@ function friendDetailHtml(f, tags){
           '<p style="color:var(--txt2);font-size:11px">' + esc(fmtTime(cl.timestamp)) + (cl.duration ? ' · ' + esc(cl.duration) : '') + '</p></div>' +
           '<button class="cb" onclick="startFriendCall(\'' + f.id + '\',\'' + cl.type + '\')">' + esc(t('fd_callback')) + '</button></div>').join('') + '</div>') + '</div>';
   }
-  return '<div class="fd-wrap">' +
+  return '<div class="fd-wrap"><button class="mback" onclick="frSelectedId=null;renderFriends()" title="Back">←</button>' +
     '<div class="fd-head">' + avHtml(f.name, f.avatarColor, '2xl') +
     '<h2>' + esc(f.nickname || f.name) + (f.isVerified ? '<span class="vf" title="Verified">✓</span>' : '') + '</h2>' +
     (f.nickname ? '<p class="nick">' + esc(f.name) + '</p>' : '') +
@@ -2633,9 +2625,15 @@ document.addEventListener('keydown', e => {
 });
 
 /* ════════════════ 启动 ════════════════ */
+/* 跨越窄屏断点时重排（旋转手机 / 拖动桌面窗口） */
+let _lastNarrow = isNarrow();
+window.addEventListener('resize', () => {
+  const n = isNarrow();
+  if (n !== _lastNarrow) { _lastNarrow = n; if (screen === 'app') { renderMainArea(); renderFriends(); } }
+});
 function boot(){
   document.getElementById('qrSvgWrap').innerHTML = qrPatternSvg();
-  if (window.matchMedia('(max-width: 599px)').matches) { showScreen('handoff'); return; }
+  /* 桌面端与移动端浏览器统一进入扫码登录页（不再分流到移动端 Handoff 引导页） */
   showScreen('qr');
   qrInit();
   setupDrag('chatDivider', dx => { leftWidth = Math.max(MIN_LEFT, Math.min(MAX_LEFT, leftWidth + dx)); document.getElementById('chatlist').style.width = leftWidth + 'px'; }, () => { leftWidth = DEFAULT_LEFT_WIDTH; document.getElementById('chatlist').style.width = leftWidth + 'px'; });
@@ -2647,7 +2645,7 @@ SCREENS（登录链）:
   qr      → 屏1 扫码登录      boot() / qrInit / qrSetState / qrClick / qrRefresh
   login   → 屏2 账密登录      DEMO_CREDS { amir.hassan / wahda123 } / loginSubmit / togglePw
   sync    → 屏3 数据同步      syncStart / syncFail / syncRetry
-  handoff → 屏4 移动端引导    <599px 自动进入（#app 隐藏）
+  (已移除屏4 移动端 Handoff：桌面与移动浏览器统一进入扫码登录页)
 
 MAIN SECTIONS（三区块，NavSidebar 72px）:
   chats   → renderChatList + renderMainArea   子视图: main | locked | archived | requests (chatSubView)
